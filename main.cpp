@@ -3,15 +3,14 @@
 #include <algorithm>
 #include <bitset>
 
-
-void paddingString(std::string &text,int ukuran){
-	if(text.length()==ukuran){
-		return;
-	}
-	size_t total = ukuran - text.length();
-	for(int i=0;i<total;i++){
-		text+='@';
-	}
+void paddingString(std::string &text, int ukuran) {
+    if (text.length() == ukuran) {
+        return;
+    }
+    size_t total = ukuran - text.length();
+    for (int i = 0; i < total; i++) {
+        text += '@';
+    }
 }
 
 std::string decryptXOR(std::string ciphertext, std::string key) {
@@ -32,53 +31,43 @@ std::string decryptXOR(std::string ciphertext, std::string key) {
     return builder.str();
 }
 
-void encryptXOR(){
-	std::string plain,key;
-	size_t padding=0;
-	system("cls");
-	std::cout<<"XOR ENCRYPT\n===============================\n";
-	std::cout<<"Masukan Teks : ";std::getline(std::cin,plain);
-	std::cout<<"Masukan Key : ";std::getline(std::cin,key);
-	/*
-		Manipulasi Plain Teks.
-		 - Penghapusan Spasi
-		 - Menghilangkan Huruf Yang Ganda.
-	*/
-	//Penghapusan spasi
-	plain.erase(std::remove(plain.begin(), plain.end(), ' '), plain.end());
-	std::cout<<"Remove space result : "<<plain<<std::endl;
-	
-	//penghapusan huruf ganda
-	std::stringstream builder;
-	builder<<plain[0];
-	for(int i=1;i<plain.length();i++){
-		if(plain[i]!=plain[i-1]){
-			builder<<plain[i];
-		}
-	}
-	//Memngubah plainteks
-	plain = builder.str();
-	//Mencari perbedaan length, menambahkan karakter ke string yang lebih pendek
-	plain.length()>key.length() ? paddingString(key,std::max(plain.length(),key.length())) :paddingString(plain,std::max(plain.length(),key.length()));
-	//mereset builder string
-	builder.str("");
-	for(int i=0;i<std::max(plain.length(),key.length());i++){
-		
-		std::bitset<8> biner1(plain[i]);
-		std::bitset<8> biner2(key[i]);
-		
-		std::bitset<8> resultXOR = biner1 ^ biner2;
-		builder<<static_cast<char>(resultXOR.to_ulong());
-	}
-	std::cout<<"\nAfter Modified\n";
-	std::cout<<"Plain = "<<plain<<std::endl;
-	std::cout<<"Key = "<<key<<std::endl;
-	std::cout<<"Result Encrypt = "<<builder.str()<<std::endl;
-	std::cout<<"==========\nDecrypt = "<<decryptXOR(builder.str(),key)<<std::endl;
+std::string encryptXOR(std::string plain, std::string key) {
+    size_t padding = 0;
+    /*
+        Manipulasi Plain Teks.
+        - Penghapusan Spasi
+        - Menghilangkan Huruf Yang Ganda.
+    */
+    // Penghapusan spasi
+    plain.erase(std::remove(plain.begin(), plain.end(), ' '), plain.end());
+    std::cout << "Remove space result : " << plain << std::endl;
+
+    // Penghapusan huruf ganda
+    std::stringstream builder;
+    builder << plain[0];
+    for (int i = 1; i < plain.length(); i++) {
+        if (plain[i] != plain[i - 1]) {
+            builder << plain[i];
+        }
+    }
+    // Mengubah plainteks
+    plain = builder.str();
+    // Mencari perbedaan length, menambahkan karakter ke string yang lebih pendek
+    plain.length() > key.length() ? paddingString(key, std::max(plain.length(), key.length())) : paddingString(plain, std::max(plain.length(), key.length()));
+    // Mereset builder string
+    builder.str("");
+    for (int i = 0; i < std::max(plain.length(), key.length()); i++) {
+
+        std::bitset<8> biner1(plain[i]);
+        std::bitset<8> biner2(key[i]);
+
+        std::bitset<8> resultXOR = biner1 ^ biner2;
+        builder << static_cast<char>(resultXOR.to_ulong());
+    }
+    return builder.str();
 }
 
-std::string decryptRailFence(std::string cipher, int kunci)
-{
+std::string decryptRailFence(std::string cipher, int kunci) {
     // Membuat matriks untuk mendekripsi pesan
     // kunci = baris, panjang(cipher) = kolom
     char rail[kunci][cipher.length()];
@@ -94,8 +83,7 @@ std::string decryptRailFence(std::string cipher, int kunci)
     int baris = 0, kolom = 0;
 
     // Menandai tempat-tempat dengan '*'
-    for (int i = 0; i < cipher.length(); i++)
-    {
+    for (int i = 0; i < cipher.length(); i++) {
         // Memeriksa arah aliran
         if (baris == 0)
             arah_ke_bawah = true;
@@ -116,13 +104,12 @@ std::string decryptRailFence(std::string cipher, int kunci)
             if (rail[i][j] == '*' && indeks < cipher.length())
                 rail[i][j] = cipher[indeks++];
 
-    // membaca matriks dalam pola zig-zag untuk mengonstruksi
+    // Membaca matriks dalam pola zig-zag untuk mengonstruksi
     // teks hasil dekripsi
     std::string hasil;
 
     baris = 0, kolom = 0;
-    for (int i = 0; i < cipher.length(); i++)
-    {
+    for (int i = 0; i < cipher.length(); i++) {
         // Memeriksa arah aliran
         if (baris == 0)
             arah_ke_bawah = true;
@@ -139,16 +126,10 @@ std::string decryptRailFence(std::string cipher, int kunci)
     return hasil;
 }
 
-void encryptRailFence(){
-	system("cls");
-	std::string teks; 
-	int kunci;
-	std::cout<<"Rail Fence ENCRYPT\n===============================\n";
-	std::cout<<"Masukan Teks : ";std::getline(std::cin,teks);
-	std::cout<<"Masukan Key : ";std::cin>>kunci;
+std::string encryptRailFence(std::string teks, int kunci) {
     // Membuat matriks untuk mengenkripsi pesan
     // kunci = baris, panjang(teks) = kolom
-    char rail[kunci][(teks.length())];
+    char rail[kunci][teks.length()];
 
     // Mengisi matriks rail untuk membedakan antara karakter terisi dan karakter kosong
     for (int i = 0; i < kunci; i++)
@@ -159,8 +140,7 @@ void encryptRailFence(){
     bool arah_ke_bawah = false;
     int baris = 0, kolom = 0;
 
-    for (int i = 0; i < teks.length(); i++)
-    {
+    for (int i = 0; i < teks.length(); i++) {
         // Memeriksa arah aliran
         // Membalik arah jika kita baru saja mengisi baris atas atau bawah
         if (baris == 0 || baris == kunci - 1)
@@ -174,19 +154,14 @@ void encryptRailFence(){
     }
 
     // Sekarang kita dapat mengonstruksi cipher menggunakan matriks rail
-   std::string hasil;
+    std::string hasil;
     for (int i = 0; i < kunci; i++)
         for (int j = 0; j < teks.length(); j++)
             if (rail[i][j] != '\n')
                 hasil.push_back(rail[i][j]);
 
-    std::cout<<"\nAfter Modified\n";
-	std::cout<<"Plain = "<<teks<<std::endl;
-	std::cout<<"Key = "<<kunci<<std::endl;
-	std::cout<<"Result Encrypt = "<<hasil<<std::endl;
-	std::cout<<"==========\nDecrypt = "<<decryptRailFence(hasil,kunci)<<std::endl;
+    return hasil;
 }
-
 
 std::string encryptCaesarCipher(std::string teks, int kunci) {
     std::string hasil = "";
@@ -208,37 +183,94 @@ std::string decryptCaesarCipher(std::string teks, int kunci) {
     return encryptCaesarCipher(teks, 26 - kunci);
 }
 
-void caesarCipher() {
-	system("cls");
-    std::string teks,d;
-    int kunci;
-    std::cout<<"Caesar CipherENCRYPT\n===============================\n";
-	std::cout<<"Masukan Teks : ";std::getline(std::cin,teks);
-	std::cout<<"Masukan Key : ";std::cin>>kunci;
-	std::cout<<"\nAfter Modified\n";
-	std::cout<<"Plain = "<<teks<<std::endl;
-	std::cout<<"Key = "<<kunci<<std::endl;
-	std::cout<<"Result Encrypt = "<<encryptCaesarCipher(teks,kunci)<<std::endl;
-	d = encryptCaesarCipher(teks,kunci);
-	std::cout<<"==========\nDecrypt = "<<decryptCaesarCipher(d,kunci)<<std::endl;
-}
-
 int main(int argc, char** argv) {
-	int a=0;
-	std::cout<<"Pilih Mode Enkripsi\n1.XOR\n2.CAESAR CHIPPER\n3.Rail Fence\n4.SUPERENCRYPT"<<std::endl;
-	std::cin>>a;std::cin.ignore();
-	switch(a){
-		case 1:
-			encryptXOR();
-			break;
-		case 2:
-			caesarCipher();
-			break;
-		case 3:
-			encryptRailFence();
-			break;
-		default:
-			break;
-	}
-}
+    int a = 0;
+    std::string plain, key, ciper, decryptedText, ciphertext;
+    int kunci,kunci1,kunci2;
 
+    std::cout << "Pilih Mode Enkripsi\n1. XOR\n2. CAESAR CIPHER\n3. Rail Fence\n4. SUPERENCRYPT" << std::endl;
+    std::cin >> a;
+    std::cin.ignore();
+
+    switch (a) {
+    case 1:
+    	std::system("cls");
+        std::cout << "XOR ENCRYPT\n===============================\n";
+        std::cout << "Masukan teks : ";
+        std::getline(std::cin, plain);
+        std::cout << "Masukan Key : ";
+        std::getline(std::cin, key);
+        std::cout << "\nAfter Modified\n";
+        std::cout << "Plain = " << plain << std::endl;
+        std::cout << "Key = " << key << std::endl;
+        ciper = encryptXOR(plain, key);
+        std::cout << "Result Encrypt = " << ciper << std::endl;
+        std::cout << "==========\nDecrypt = " << decryptXOR(ciper, key) << std::endl;
+        break;
+    case 2:
+    	std::system("cls");
+        std::cout << "Caesar Cipher ENCRYPT\n===============================\n";
+        std::cout << "Masukan teks : ";
+        std::getline(std::cin, plain);
+        std::cout << "Masukan Key : ";
+        std::cin >> kunci;
+        std::cout << "\nAfter Modified\n";
+        std::cout << "Plain = " << plain << std::endl;
+        std::cout << "Key = " << kunci << std::endl;
+        std::cout << "Result Encrypt = " << encryptCaesarCipher(plain, kunci) << std::endl;
+        std::cout << "==========\nDecrypt = " << decryptCaesarCipher(encryptCaesarCipher(plain, kunci), kunci) << std::endl;
+        break;
+    case 3:
+    	std::system("cls");
+        std::cout << "Rail Fence ENCRYPT\n===============================\n";
+        std::cout << "Masukan teks : ";
+        std::getline(std::cin, plain);
+		std::cout << "Masukan Key : ";
+        std::cin >> kunci;
+        std::cout << "\nAfter Modified\n";
+        std::cout << "Plain = " << plain << std::endl;
+        std::cout << "Key = " << kunci << std::endl;
+        std::cout << "Result Encrypt = " << encryptRailFence(plain, kunci) << std::endl;
+        std::cout << "==========\nDecrypt = " << decryptRailFence(encryptRailFence(plain, kunci), kunci) << std::endl;
+        break;
+    case 4:
+    	std::system("cls");
+    	std::cout << "Masukkan teks : ";
+	    std::getline(std::cin, plain);
+	    // Hapus spasi dari plain
+	    plain.erase(std::remove_if(plain.begin(), plain.end(), ::isspace), plain.end());
+	    std::cout << "Rail Fence ENCRYPT\n===============================\n";
+	    std::cout << "Masukkan Key Rail Fence: ";
+	    std::cin >> kunci1;
+	    // Enkripsi Rail Fence
+	    ciphertext = encryptRailFence(plain, kunci1);
+	    std::cout << "Result Encrypt Rail Fence: " << ciphertext << std::endl;
+	    std::cout << "Caesar Cipher ENCRYPT\n===============================\n";
+	    std::cout << "Masukkan Key Caesar Cipher: ";
+	    std::cin >> kunci2;
+	    // Enkripsi Caesar Cipher
+	    ciphertext = encryptCaesarCipher(ciphertext, kunci2);
+	    std::cout << "Result Encrypt Caesar Cipher: " << ciphertext << std::endl;
+	    std::cout << "XOR ENCRYPT\n===============================\n";
+	    std::cin.ignore();
+	    std::cout << "Masukkan Key XOR: ";
+	    std::getline(std::cin, key);
+	    // Enkripsi XOR
+	    ciphertext = encryptXOR(ciphertext, key);
+	    std::cout << "Result Encrypt XOR: " << ciphertext << std::endl;
+	    // Dekripsi XOR
+	    decryptedText = decryptXOR(ciphertext, key);
+	    std::cout << "Result Decrypt XOR: " << decryptedText << std::endl;
+	    // Dekripsi Caesar Cipher
+	    decryptedText = decryptCaesarCipher(decryptedText, kunci2);
+	    std::cout << "Result Decrypt Caesar Cipher: " << decryptedText << std::endl;
+	    // Dekripsi Rail Fence
+	    decryptedText = decryptRailFence(decryptedText, kunci1);
+	    std::cout << "Result Decrypt Rail Fence: " << decryptedText << std::endl;
+        break;
+    default:
+        std::cout << "Pilihan tidak valid." << std::endl;
+        break;
+    }
+    return 0;
+}
