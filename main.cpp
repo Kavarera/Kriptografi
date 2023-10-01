@@ -256,6 +256,7 @@ int main(int argc, char** argv) {
 	    std::cout << "Masukkan Key XOR: ";
 	    std::getline(std::cin, key);
 	    // Enkripsi XOR
+	    std::cout<<"Before XOR = "<<ciphertext<<"\n";
 	    ciphertext = encryptXOR(ciphertext, key);
 	    std::cout << "Result Encrypt XOR: " << ciphertext << std::endl;
 	    // Dekripsi XOR
