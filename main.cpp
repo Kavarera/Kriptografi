@@ -129,13 +129,12 @@ std::string decryptRailFence(std::string cipher, int kunci) {
 }
 
 std::string encryptRailFence(std::string teks, int kunci) {
-    // Hapus spasi dari teks
-	teks.erase(std::remove_if(teks.begin(), teks.end(), ::isspace), teks.end());
-	
-	// Membuat matriks untuk mengenkripsi pesan
+	// Hapus spasi dari plain
+	    teks.erase(std::remove_if(teks.begin(), teks.end(), ::isspace), teks.end());
+    // Membuat matriks untuk mengenkripsi pesan
     // kunci = baris, panjang(teks) = kolom
     char rail[kunci][teks.length()];
-	
+
     // Mengisi matriks rail untuk membedakan antara karakter terisi dan karakter kosong
     for (int i = 0; i < kunci; i++)
         for (int j = 0; j < teks.length(); j++)
