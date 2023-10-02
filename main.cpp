@@ -31,7 +31,7 @@ std::string decryptXOR(std::string ciphertext, std::string key) {
     return builder.str();
 }
 
-std::string encryptXOR(std::string plain, std::string key) {
+std::string encryptXOR(std::string plain, std::string key,bool isSuper=false) {
     size_t padding = 0;
     /*
         Manipulasi Plain Teks.
@@ -41,21 +41,23 @@ std::string encryptXOR(std::string plain, std::string key) {
     // Penghapusan spasi
     plain.erase(std::remove(plain.begin(), plain.end(), ' '), plain.end());
     std::cout << "Remove space result : " << plain << std::endl;
-
-    // Penghapusan huruf ganda
+    
     std::stringstream builder;
-    builder << plain[0];
-    for (int i = 1; i < plain.length(); i++) {
-        if (plain[i] != plain[i - 1]) {
+    // Penghapusan huruf ganda
+    if(isSuper==false){
+    	builder << plain[0];
+    	for (int i = 1; i < plain.length(); i++) {
+       		if (plain[i] != plain[i - 1]) {
             builder << plain[i];
-        }
+        	}
+    	}
+	    // Mengubah plainteks
+	    plain = builder.str();
+	    // Mereset builder string
+	    builder.str("");
     }
-    // Mengubah plainteks
-    plain = builder.str();
     // Mencari perbedaan length, menambahkan karakter ke string yang lebih pendek
     plain.length() > key.length() ? paddingString(key, std::max(plain.length(), key.length())) : paddingString(plain, std::max(plain.length(), key.length()));
-    // Mereset builder string
-    builder.str("");
     for (int i = 0; i < std::max(plain.length(), key.length()); i++) {
 
         std::bitset<8> biner1(plain[i]);
@@ -127,10 +129,13 @@ std::string decryptRailFence(std::string cipher, int kunci) {
 }
 
 std::string encryptRailFence(std::string teks, int kunci) {
-    // Membuat matriks untuk mengenkripsi pesan
+    // Hapus spasi dari teks
+	teks.erase(std::remove_if(teks.begin(), teks.end(), ::isspace), teks.end());
+	
+	// Membuat matriks untuk mengenkripsi pesan
     // kunci = baris, panjang(teks) = kolom
     char rail[kunci][teks.length()];
-
+	
     // Mengisi matriks rail untuk membedakan antara karakter terisi dan karakter kosong
     for (int i = 0; i < kunci; i++)
         for (int j = 0; j < teks.length(); j++)
@@ -203,7 +208,7 @@ int main(int argc, char** argv) {
         std::cout << "\nAfter Modified\n";
         std::cout << "Plain = " << plain << std::endl;
         std::cout << "Key = " << key << std::endl;
-        ciper = encryptXOR(plain, key);
+        ciper = encryptXOR(plain, key,true);
         std::cout << "Result Encrypt = " << ciper << std::endl;
         std::cout << "==========\nDecrypt = " << decryptXOR(ciper, key) << std::endl;
         break;
@@ -256,7 +261,8 @@ int main(int argc, char** argv) {
 	    std::cout << "Masukkan Key XOR: ";
 	    std::getline(std::cin, key);
 	    // Enkripsi XOR
-	    ciphertext = encryptXOR(ciphertext, key);
+	    std::cout<<"Before XOR = "<<ciphertext<<"\n";
+	    ciphertext = encryptXOR(ciphertext, key,true);
 	    std::cout << "Result Encrypt XOR: " << ciphertext << std::endl;
 	    // Dekripsi XOR
 	    decryptedText = decryptXOR(ciphertext, key);
