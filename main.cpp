@@ -186,7 +186,10 @@ std::string decryptCaesarCipher(std::string teks, int kunci) {
 }
 
 int main(int argc, char** argv) {
-    int a = 0;
+	bool a=true;
+    while(a){
+    	system("cls");
+    	int a = 0;
     std::string plain, key, ciper, decryptedText, ciphertext;
     int kunci,kunci1,kunci2;
 
@@ -208,20 +211,28 @@ int main(int argc, char** argv) {
         ciper = encryptXOR(plain, key,true);
         std::cout << "Result Encrypt = " << ciper << std::endl;
         std::cout << "==========\nDecrypt = " << decryptXOR(ciper, key) << std::endl;
-        break;
+        system("pause");
+		break;
     case 2:
     	std::system("cls");
         std::cout << "Caesar Cipher ENCRYPT\n===============================\n";
         std::cout << "Masukan teks : ";
         std::getline(std::cin, plain);
         std::cout << "Masukan Key : ";
-        std::cin >> kunci;
+    	std::cin >> kunci;
+    	while(std::cin.fail()){
+    		std::cin.clear();
+    		std::cin.ignore();
+    		std::cout<<"Invalid input, use number\nMasukan Key: ";
+    		std::cin>>kunci;
+		}
         std::cout << "\nAfter Modified\n";
         std::cout << "Plain = " << plain << std::endl;
         std::cout << "Key = " << kunci << std::endl;
         std::cout << "Result Encrypt = " << encryptCaesarCipher(plain, kunci) << std::endl;
         std::cout << "==========\nDecrypt = " << decryptCaesarCipher(encryptCaesarCipher(plain, kunci), kunci) << std::endl;
-        break;
+        system("pause");
+		break;
     case 3:
     	std::system("cls");
         std::cout << "Rail Fence ENCRYPT\n===============================\n";
@@ -229,12 +240,19 @@ int main(int argc, char** argv) {
         std::getline(std::cin, plain);
 		std::cout << "Masukan Key : ";
         std::cin >> kunci;
+        while(std::cin.fail()){
+    		std::cin.clear();
+    		std::cin.ignore();
+    		std::cout<<"Invalid input, use number\nMasukan Key: ";
+    		std::cin>>kunci;
+		}
         std::cout << "\nAfter Modified\n";
         std::cout << "Plain = " << plain << std::endl;
         std::cout << "Key = " << kunci << std::endl;
         std::cout << "Result Encrypt = " << encryptRailFence(plain, kunci) << std::endl;
         std::cout << "==========\nDecrypt = " << decryptRailFence(encryptRailFence(plain, kunci), kunci) << std::endl;
-        break;
+        system("pause");
+		break;
     case 4:
     	std::system("cls");
     	std::cout << "Masukkan teks : ";
@@ -244,12 +262,25 @@ int main(int argc, char** argv) {
 	    std::cout << "Rail Fence ENCRYPT\n===============================\n";
 	    std::cout << "Masukkan Key Rail Fence: ";
 	    std::cin >> kunci1;
+	    while(std::cin.fail()){
+    		std::cin.clear();
+    		std::cin.ignore();
+    		std::cout<<"Invalid input, use number\nMasukan Key: ";
+    		std::cin>>kunci1;
+		}
 	    // Enkripsi Rail Fence
 	    ciphertext = encryptRailFence(plain, kunci1);
 	    std::cout << "Result Encrypt Rail Fence: " << ciphertext << std::endl;
 	    std::cout << "Caesar Cipher ENCRYPT\n===============================\n";
 	    std::cout << "Masukkan Key Caesar Cipher: ";
 	    std::cin >> kunci2;
+	    while(std::cin.fail()){
+    		std::cin.clear();
+    		std::cin.ignore();
+    		std::cout<<"Invalid input, use number"<<std::endl;
+    		std::cout<<"Masukan Key = ";
+    		std::cin>>kunci2;
+		}
 	    // Enkripsi Caesar Cipher
 	    ciphertext = encryptCaesarCipher(ciphertext, kunci2);
 	    std::cout << "Result Encrypt Caesar Cipher: " << ciphertext << std::endl;
@@ -270,10 +301,15 @@ int main(int argc, char** argv) {
 	    // Dekripsi Rail Fence
 	    decryptedText = decryptRailFence(decryptedText, kunci1);
 	    std::cout << "Result Decrypt Rail Fence: " << decryptedText << std::endl;
-        break;
+        system("pause");
+		break;
+        case 5:
+        	exit(0);
+        	break;
     default:
         std::cout << "Pilihan tidak valid." << std::endl;
         break;
     }
+	}
     return 0;
 }
